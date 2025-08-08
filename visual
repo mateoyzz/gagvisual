@@ -1,123 +1,108 @@
--- GAG Loader GUI by HANZSCRIPTS
-
-local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
--- ScreenGui
-local gui = Instance.new("ScreenGui")
-gui.Name = "NoLagHubV2"
-gui.ResetOnSpawn = false
-gui.Parent = player:WaitForChild("PlayerGui")
+-- GUI Setup
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+screenGui.ResetOnSpawn = false
 
--- Main Frame
-local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 400, 0, 200)
-main.Position = UDim2.new(0.5, -200, 0.5, -100)
-main.AnchorPoint = Vector2.new(0.5, 0.5)
-main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-main.BorderSizePixel = 4
-main.BorderColor3 = Color3.fromRGB(0, 0, 0) -- Black border
-main.Active = true
-main.Draggable = true
-main.Parent = gui
-Instance.new("UICorner", main).CornerRadius = UDim.new(0, 8)
+local mainFrame = Instance.new("Frame", screenGui)
+mainFrame.Size = UDim2.new(0, 600, 0, 300)
+mainFrame.Position = UDim2.new(0.5, -300, 0.5, -150)
+mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+mainFrame.BorderSizePixel = 4
 
--- Title Label
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundTransparency = 1
-title.Text = "⭐LOADING GAG SCRIPT⭐"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Font = Enum.Font.GothamBold
-title.TextSize = 24
-title.Parent = main
-
--- Subtitle Label (Bottom)
-local subtitle = Instance.new("TextLabel")
-subtitle.Size = UDim2.new(1, 0, 0, 20)
-subtitle.Position = UDim2.new(0, 0, 1, -20)
-subtitle.BackgroundTransparency = 1
-subtitle.Text = "Please Wait.."
-subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
-subtitle.Font = Enum.Font.Gotham
-subtitle.TextSize = 16
-subtitle.Parent = main
-
--- Loading bar background
-local barBG = Instance.new("Frame")
-barBG.Size = UDim2.new(0.9, 0, 0, 20)
-barBG.Position = UDim2.new(0.05, 0, 0.5, -10)
-barBG.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-barBG.Parent = main
-Instance.new("UICorner", barBG).CornerRadius = UDim.new(0, 6)
-
--- Loading bar (RGB)
-local bar = Instance.new("Frame")
-bar.Size = UDim2.new(0, 0, 1, 0)
-bar.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-bar.Parent = barBG
-Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 6)
-
--- DONE Label (hidden initially)
-local doneLabel = Instance.new("TextLabel")
-doneLabel.Size = UDim2.new(1, 0, 0, 30)
-doneLabel.Position = UDim2.new(0, 0, 0.7, 0)
-doneLabel.BackgroundTransparency = 1
-doneLabel.Text = "✅ DONE! LOADING SCRIPT..."
-doneLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-doneLabel.Font = Enum.Font.GothamBold
-doneLabel.TextSize = 20
-doneLabel.Visible = false
-doneLabel.Parent = main
-
--- Control Variables
-local duration = 20 -- seconds
-local startTime = tick()
-local running = true
-
--- RGB Bar Animation Only
+-- RGB Border
 spawn(function()
-	local hue = 0
-	while running do
-		local nextColor = Color3.fromHSV(hue, 1, 1)
-		local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear)
-		local tween = TweenService:Create(bar, tweenInfo, {BackgroundColor3 = nextColor})
-		tween:Play()
-		wait(2)
-		hue = (hue + 0.1) % 1
+	while true do
+		for i = 0, 1, 0.01 do
+			mainFrame.BorderColor3 = Color3.fromHSV(i, 1, 1)
+			wait(0.03)
+		end
 	end
 end)
 
--- Progress Bar Filler
+-- Title
+local title = Instance.new("TextLabel", mainFrame)
+title.Size = UDim2.new(1, 0, 0.2, 0)
+title.Position = UDim2.new(0, 0, 0, 10)
+title.BackgroundTransparency = 1
+title.Text = "★LOADING GROW A GARDEN SCRIPT★"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBlack
+title.TextScaled = true
+
+-- Subtext
+local subtext = Instance.new("TextLabel", mainFrame)
+subtext.Size = UDim2.new(1, 0, 0.1, 0)
+subtext.Position = UDim2.new(0, 0, 0.2, 0)
+subtext.BackgroundTransparency = 1
+subtext.Text = "Please wait..."
+subtext.TextColor3 = Color3.fromRGB(200, 200, 200)
+subtext.Font = Enum.Font.Gotham
+subtext.TextScaled = true
+
+-- Loading Bar Background
+local barBG = Instance.new("Frame", mainFrame)
+barBG.Size = UDim2.new(0.9, 0, 0.1, 0)
+barBG.Position = UDim2.new(0.05, 0, 0.5, 0)
+barBG.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+barBG.BorderSizePixel = 0
+
+-- Loading Bar Fill
+local barFill = Instance.new("Frame", barBG)
+barFill.Size = UDim2.new(0, 0, 1, 0)
+barFill.BackgroundColor3 = Color3.new(1, 0, 0)
+barFill.BorderSizePixel = 0
+
+-- RGB Tweening Bar Fill
 spawn(function()
-	while running do
-		local elapsed = tick() - startTime
-		local percent = math.clamp(elapsed / duration, 0, 1)
-		bar.Size = UDim2.new(percent, 0, 1, 0)
-
-		if percent >= 1 then
-			running = false
-
-			-- Show DONE text
-			doneLabel.Visible = true
-			subtitle.Text = "" -- Hide "Please Wait.."
-			wait(2)
-
-			-- Hide the GUI
-			gui:Destroy()
-
-			-- Load external script
-			local success, err = pcall(function()
-				local Spawner = loadstring(game:HttpGet("https://codeberg.org/GrowAFilipino/GrowAGarden/raw/branch/main/Spawner.lua"))()
-				Spawner.Load()
-			end)
-
-			if not success then
-				warn("Failed to load GAG script:", err)
-			end
+	while true do
+		for i = 0, 1, 0.01 do
+			barFill.BackgroundColor3 = Color3.fromHSV(i, 1, 1)
+			wait(0.03)
 		end
-
-		wait(0.03)
 	end
+end)
+
+-- Status Message
+local status = Instance.new("TextLabel", mainFrame)
+status.Size = UDim2.new(1, 0, 0.1, 0)
+status.Position = UDim2.new(0, 0, 0.65, 0)
+status.BackgroundTransparency = 1
+status.Text = "Loading..."
+status.TextColor3 = Color3.fromRGB(255, 255, 255)
+status.Font = Enum.Font.GothamBold
+status.TextScaled = true
+
+-- Side Info
+local sideInfo = Instance.new("TextLabel", mainFrame)
+sideInfo.Size = UDim2.new(0.4, 0, 0.3, 0)
+sideInfo.Position = UDim2.new(0.6, 0, 0.75, 0)
+sideInfo.BackgroundTransparency = 1
+sideInfo.Text = "PET NEEDS:\nDIVINE PETS ✓\nHUGE PETS ✓"
+sideInfo.TextColor3 = Color3.fromRGB(100, 255, 100)
+sideInfo.Font = Enum.Font.Gotham
+sideInfo.TextScaled = true
+sideInfo.TextXAlignment = Enum.TextXAlignment.Left
+sideInfo.TextYAlignment = Enum.TextYAlignment.Top
+
+-- Tween loading bar over 20 seconds
+local duration = 20
+local tween = TweenService:Create(barFill, TweenInfo.new(duration), {
+	Size = UDim2.new(1, 0, 1, 0)
+})
+tween:Play()
+
+-- Wait for tween to finish
+task.delay(duration, function()
+	status.Text = "SCRIPT LOADED!"
+
+	-- Load external script
+	local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
+	Spawner.Load()
+
+	-- Optional: Remove GUI after loading
+	wait(3)
+	screenGui:Destroy()
 end)
